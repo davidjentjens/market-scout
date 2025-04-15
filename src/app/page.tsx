@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-primary-400 py-20">
+      <section className="relative bg-primary-600 py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl">
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
@@ -39,7 +39,6 @@ export default function HomePage() {
               alt="Decorative" 
               fill 
               style={{ objectFit: 'cover' }}
-              className="opacity-70" 
             />
           </div>
         </div>
