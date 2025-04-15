@@ -2,6 +2,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import './globals.css';
+import Image from 'next/image';
 
 export const metadata = {
   title: 'Market Scout',
@@ -20,8 +21,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div className="flex flex-col min-h-screen">
           <header className="bg-white shadow-sm">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-              <Link href="/" className="font-display text-2xl text-primary-600 font-bold">
-                Market Scout
+              <Link href="/">
+                <div className="flex items-center">
+                  <Image src="/icons/tomato.png" alt="Market Scout Logo" width={1024} height={1024} className="h-12 w-12 mr-1" />
+                  <h3 className='font-sans text-2xl text-primary-600 font-bold'>Market Scout</h3>
+                </div>
               </Link>
               <nav className="hidden md:flex space-x-6">
                 <Link href="/markets" className="font-medium text-gray-700 hover:text-primary-500 transition">

@@ -14,16 +14,17 @@
   --color-primary-800: oklch(0.48 0.13 148);
   --color-primary-900: oklch(0.40 0.10 148);
   
-  /* Earth tones */
-  --color-earth-100: oklch(0.97 0.02 80);
-  --color-earth-200: oklch(0.92 0.04 80);
-  --color-earth-300: oklch(0.86 0.06 80); /* Soft terracotta */
-  --color-earth-400: oklch(0.80 0.08 80);
-  --color-earth-500: oklch(0.74 0.10 80);
-  --color-earth-600: oklch(0.66 0.09 80);
-  --color-earth-700: oklch(0.58 0.08 80);
-  --color-earth-800: oklch(0.48 0.07 80);
-  --color-earth-900: oklch(0.36 0.06 80);
+  /* Earth tones - updated with warmer, richer browns */
+  --color-earth-50: oklch(0.98 0.02 85);
+  --color-earth-100: oklch(0.97 0.03 85);
+  --color-earth-200: oklch(0.92 0.05 85);
+  --color-earth-300: oklch(0.86 0.08 85); /* Warmer terracotta */
+  --color-earth-400: oklch(0.80 0.10 85);
+  --color-earth-500: oklch(0.74 0.12 85);
+  --color-earth-600: oklch(0.66 0.11 85);
+  --color-earth-700: oklch(0.58 0.10 85);
+  --color-earth-800: oklch(0.48 0.09 85);
+  --color-earth-900: oklch(0.36 0.08 85);
   
   /* Font families */
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
@@ -38,26 +39,54 @@
   h1, h2, h3, h4, h5 {
     @apply font-serif;
   }
+
+  /* Basic animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInRight {
+    from { 
+      transform: translateX(100%); 
+      opacity: 0; 
+    }
+    to { 
+      transform: translateX(0); 
+      opacity: 1; 
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 0.1s; /* Start after page load */
+  }
+
+  .hero-image {
+    opacity: 0; /* Hide initially */
+    animation: slideInRight 1.2s ease-out forwards;
+    animation-delay: 0.5s; /* Start after page load */
+  }
 }
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-300;
   }
   
   .btn-primary {
-    @apply bg-primary-500 text-white hover:bg-primary-600;
+    @apply bg-primary-500 text-white hover:bg-primary-600 hover:shadow-lg hover:-translate-y-1;
   }
   
   .btn-secondary {
-    @apply bg-earth-500 text-white hover:bg-earth-600;
+    @apply bg-earth-500 text-white hover:bg-earth-600 hover:shadow-lg hover:-translate-y-1;
   }
   
   .btn-outline {
-    @apply border border-primary-500 text-primary-500 hover:bg-primary-50;
+    @apply border border-primary-500 text-primary-500 hover:bg-primary-50 hover:shadow-lg hover:-translate-y-1 hover:border-primary-600;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300;
+    @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
 }
