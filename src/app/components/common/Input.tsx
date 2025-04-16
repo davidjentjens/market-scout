@@ -12,6 +12,7 @@ interface InputProps {
   label?: string;
   required?: boolean;
   error?: string;
+  noMargin?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -25,9 +26,10 @@ const Input: React.FC<InputProps> = ({
   label,
   required = false,
   error,
+  noMargin = false,
 }) => {
   return (
-    <div className="mb-4">
+    <div className={`${noMargin ? '' : 'mb-4'}`}>
       {label && (
         <label
           htmlFor={id || name}
