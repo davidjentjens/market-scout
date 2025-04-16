@@ -29,7 +29,8 @@ export const markets: Market[] = [
         userName: "Sarah J.",
         rating: 5,
         comment: "Love the variety of produce and friendly vendors!",
-        date: "2024-03-15"
+        date: "2024-03-15",
+        marketName: 'Downtown Farmers Market'
       },
       {
         id: "r2",
@@ -37,7 +38,8 @@ export const markets: Market[] = [
         userName: "Michael T.",
         rating: 4,
         comment: "Great atmosphere but parking can be challenging.",
-        date: "2024-02-28"
+        date: "2024-02-28",
+        marketName: 'Downtown Farmers Market'
       }
     ]
   },
@@ -67,7 +69,8 @@ export const markets: Market[] = [
         userName: "Alex K.",
         rating: 5,
         comment: "The best organic produce in the city!",
-        date: "2024-03-20"
+        date: "2024-03-20",
+        marketName: 'Riverside Farmers Market'
       }
     ]
   },
@@ -96,7 +99,8 @@ export const markets: Market[] = [
         userName: "Chris P.",
         rating: 4,
         comment: "Great community vibe and excellent variety.",
-        date: "2024-03-10"
+        date: "2024-03-10",
+        marketName: 'Hillside Community Market'
       },
       {
         id: "r5",
@@ -104,7 +108,8 @@ export const markets: Market[] = [
         userName: "Taylor M.",
         rating: 5,
         comment: "The freshest strawberries I've ever had!",
-        date: "2024-02-24"
+        date: "2024-02-24",
+        marketName: 'Hillside Community Market'
       }
     ]
   }
