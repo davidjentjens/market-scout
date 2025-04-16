@@ -4,6 +4,7 @@ import Link from 'next/link';
 import './globals.css';
 import Image from 'next/image';
 import { Inter, Playfair_Display, Nunito_Sans } from 'next/font/google';
+import ScrollReveal from './components/home/ScrollReveal';
 
 // Configure the fonts
 const inter = Inter({
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           
           <main className="flex-grow">
             {children}
+            <ScrollReveal />
           </main>
           
           <footer className="bg-earth-900 text-white py-8">
