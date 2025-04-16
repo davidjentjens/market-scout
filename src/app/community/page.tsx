@@ -1,37 +1,113 @@
 // src/app/community/page.tsx
-import { Suspense } from 'react';
+"use client";
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { markets } from '../data/markets';
 import { events } from '../data/events';
-import CommunityEventsSection from '../components/community/CommunityEventsSection';
-import CommunityReviewsSection from '../components/community/CommunityReviewsSection';
-import { Review } from '../lib/types';
+import { Event, Review } from '../lib/types';
+import dynamic from 'next/dynamic';
+import { atcb_action } from 'add-to-calendar-button';
 
-// Get all reviews
-const getAllReviews = () => {
-  const reviews = markets.reduce((acc, market) => {
-    if (market.reviews && market.reviews.length > 0) {
-      // Add market name to each review for display purposes
-      const marketReviews = market.reviews.map(review => ({
-        ...review,
-        marketName: market.name
-      }));
-      return [...acc, ...marketReviews];
-    }
-    return acc;
-  }, [] as Review[]);
-  
-  // Sort reviews by date (newest first)
-  return reviews.sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-};
+// Components imported dynamically to avoid SSR issues
+const ReviewCard = dynamic(() => import('../components/community/ReviewCard'), { ssr: false });
+const EventCard = dynamic(() => import('../components/community/EventCard'), { ssr: false });
 
 export default function CommunityPage() {
-  // Pre-fetch data for server rendering
-  const allEvents = events;
-  const allReviews = getAllReviews();
+  const [allEvents, setAllEvents] = useState<Event[]>(events);
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
+  const [filter, setFilter] = useState('all');
+  
+  // Initialize data
+  useEffect(() => {
+    // Get all events
+    setAllEvents(events);
+    
+    // Get all reviews from markets
+    const reviews = markets.reduce((acc, market) => {
+      if (market.reviews && market.reviews.length > 0) {
+        // Add market name to each review for display purposes
+        const marketReviews = market.reviews.map(review => ({
+          ...review,
+          marketName: market.name
+        }));
+        return [...acc, ...marketReviews];
+      }
+      return acc;
+    }, [] as Review[]);
+    
+    // Sort reviews by date (newest first)
+    const sortedReviews = reviews.sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    setAllReviews(sortedReviews);
+  }, []);
+  
+  // Handle add to calendar
+  const handleAddToCalendar = async (event: Event) => {
+    const eventDate = new Date(event.date);
+    const market = markets.find(m => m.id === event.marketId);
+    
+    // Parse times properly
+    const [startTimeStr, endTimeStr] = event.time.split(' - ');
+    
+    // Convert to 24-hour format
+    const formatTimeFor24Hour = (timeStr: string) => {
+      const match = timeStr.match(/(\d+):(\d+)\s+(AM|PM)/i);
+      if (!match) return null;
+      
+      let hours = parseInt(match[1], 10);
+      const minutes = match[2];
+      const period = match[3].toUpperCase();
+      
+      if (period === 'PM' && hours < 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+      
+      return `${hours.toString().padStart(2, '0')}:${minutes}`;
+    };
+    
+    const startTime = formatTimeFor24Hour(startTimeStr);
+    const endTime = formatTimeFor24Hour(endTimeStr);
+    
+    if (!startTime || !endTime || !market) {
+      console.error("Invalid data for calendar event");
+      return;
+    }
+    
+    await atcb_action({
+      name: event.title,
+      description: event.description,
+      location: `${market.name}, ${market.address}, ${market.city}, ${market.state}`,
+      startDate: eventDate.toISOString().split('T')[0],
+      endDate: eventDate.toISOString().split('T')[0],
+      startTime: startTime,
+      endTime: endTime,
+      options: ['Apple', 'Google', 'iCal', 'Microsoft365', 'Outlook.com', 'Yahoo'],
+      timeZone: "America/Sao_Paulo",
+      iCalFileName: event.title.replace(/\s+/g, '-').toLowerCase(),
+    });
+  };
+  
+  // Filter events by upcoming/past
+  const filteredEvents = allEvents.filter(event => {
+    const eventDate = new Date(event.date);
+    const today = new Date();
+    
+    if (filter === 'upcoming') {
+      return eventDate >= today;
+    } else if (filter === 'past') {
+      return eventDate < today;
+    }
+    
+    return true; // 'all' filter
+  });
+  
+  // Sort events by date (upcoming first)
+  const sortedEvents = filteredEvents.sort((a, b) => 
+    new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
 
   return (
     <div className="min-h-screen bg-earth-50">
@@ -65,15 +141,91 @@ export default function CommunityPage() {
           </div>
         </div>
         
-        {/* Events Section - Wrapped in Suspense for loading state */}
-        <Suspense fallback={<EventsSectionSkeleton />}>
-          <CommunityEventsSection events={allEvents} />
-        </Suspense>
+        {/* Events Section */}
+        <section id="events" className="scroll-reveal mb-16">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="font-display text-3xl font-bold text-primary-800">Market Events</h2>
+            <div className="flex space-x-2">
+              <button 
+                onClick={() => setFilter('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'all' 
+                    ? 'bg-primary-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-primary-50'
+                }`}
+              >
+                All Events
+              </button>
+              <button 
+                onClick={() => setFilter('upcoming')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'upcoming' 
+                    ? 'bg-primary-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-primary-50'
+                }`}
+              >
+                Upcoming
+              </button>
+              <button 
+                onClick={() => setFilter('past')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  filter === 'past' 
+                    ? 'bg-primary-600 text-white' 
+                    : 'bg-white text-gray-700 hover:bg-primary-50'
+                }`}
+              >
+                Past Events
+              </button>
+            </div>
+          </div>
+          
+          {sortedEvents.length === 0 ? (
+            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+              <p className="text-gray-600">No events found for the selected filter.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sortedEvents.map((event, index) => (
+                <div 
+                  key={event.id} 
+                  className={`scroll-reveal-item ${index % 3 === 0 ? '' : index % 3 === 1 ? 'delay-1' : 'delay-2'}`}
+                >
+                  <EventCard 
+                    event={event} 
+                    market={markets.find(m => m.id === event.marketId)!}
+                    onAddToCalendar={() => handleAddToCalendar(event)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
         
-        {/* Reviews Section - Wrapped in Suspense for loading state */}
-        <Suspense fallback={<ReviewsSectionSkeleton />}>
-          <CommunityReviewsSection reviews={allReviews} />
-        </Suspense>
+        {/* Reviews Section */}
+        <section id="reviews" className="scroll-reveal mb-16">
+          <h2 className="font-display text-3xl font-bold text-primary-800 mb-8">Community Reviews</h2>
+          
+          {allReviews.length === 0 ? (
+            <div className="bg-white p-8 rounded-lg shadow-md text-center">
+              <p className="text-gray-600">No reviews available yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {allReviews.slice(0, 6).map((review, index) => (
+                <div 
+                  key={review.id} 
+                  className={`scroll-reveal-item ${index % 2 === 0 ? '' : 'delay-1'}`}
+                >
+                  <ReviewCard 
+                    review={review} 
+                    marketName={review.marketName}
+                    marketId={review.marketId}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
         
         {/* Community Engagement Section */}
         <section className="scroll-reveal">
@@ -303,33 +455,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-// Skeleton loaders for suspense boundaries
-const EventsSectionSkeleton = () => (
-  <section className="mb-16">
-    <div className="flex justify-between items-center mb-8">
-      <div className="h-10 w-64 bg-gray-200 rounded animate-pulse"></div>
-      <div className="flex space-x-2">
-        <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
-        <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
-        <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[1, 2, 3, 4, 5, 6].map((item) => (
-        <div key={item} className="h-96 bg-gray-200 rounded-lg animate-pulse"></div>
-      ))}
-    </div>
-  </section>
-);
-
-const ReviewsSectionSkeleton = () => (
-  <section className="mb-16">
-    <div className="h-10 w-64 bg-gray-200 rounded animate-pulse mb-8"></div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[1, 2, 3, 4].map((item) => (
-        <div key={item} className="h-48 bg-gray-200 rounded-lg animate-pulse"></div>
-      ))}
-    </div>
-  </section>
-);
