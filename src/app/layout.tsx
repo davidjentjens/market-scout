@@ -1,5 +1,7 @@
-// src/app/layout.tsx
-import { ReactNode } from 'react';
+// src/app/layout.tsx with functional mobile menu (no sliding animation)
+"use client";
+
+import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import './globals.css';
 import Image from 'next/image';
@@ -28,12 +30,13 @@ const nunitoSans = Nunito_Sans({
   weight: ['400', '500', '600', '700']
 });
 
-export const metadata = {
-  title: 'Market Scout',
-  description: 'Find local farmers markets near you',
-};
-
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${nunitoSans.variable}`}>
       <head>
@@ -42,7 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="flex flex-col min-h-screen">
-          <header className="bg-white shadow-sm">
+          <header className="bg-white shadow-sm relative z-30">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
               <Link href="/">
                 <div className="flex items-center">
@@ -64,13 +67,62 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   Community
                 </Link>
               </nav>
-              <button className="md:hidden">
-                {/* Mobile menu icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+              <button 
+                className="md:hidden focus:outline-none"
+                onClick={toggleMobileMenu}
+                aria-label="Toggle mobile menu"
+              >
+                {mobileMenuOpen ? (
+                  // X icon for closing
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  // Hamburger icon for opening
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
               </button>
             </div>
+            
+            {/* Mobile menu - simple display with no animation */}
+            {mobileMenuOpen && (
+              <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg z-20">
+                <div className="container mx-auto px-4 py-3">
+                  <nav className="flex flex-col space-y-4 py-2">
+                    <Link 
+                      href="/markets" 
+                      className="font-medium text-gray-700 hover:text-primary-500 transition py-2 px-4 hover:bg-gray-50 rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Markets
+                    </Link>
+                    <Link 
+                      href="/vendors" 
+                      className="font-medium text-gray-700 hover:text-primary-500 transition py-2 px-4 hover:bg-gray-50 rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Vendors
+                    </Link>
+                    <Link 
+                      href="/calendar" 
+                      className="font-medium text-gray-700 hover:text-primary-500 transition py-2 px-4 hover:bg-gray-50 rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Seasonal Guide
+                    </Link>
+                    <Link 
+                      href="/community" 
+                      className="font-medium text-gray-700 hover:text-primary-500 transition py-2 px-4 hover:bg-gray-50 rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Community
+                    </Link>
+                  </nav>
+                </div>
+              </div>
+            )}
           </header>
           
           <main className="flex-grow">
