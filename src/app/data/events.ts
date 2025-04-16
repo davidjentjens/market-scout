@@ -17,7 +17,7 @@ export const events: Event[] = [
     description: "Local chef demonstrates seasonal recipes featuring early spring produce.",
     marketId: "1",
     date: "2024-04-27",
-    time: "11:00 AM - 1:00 PM",
+    time: "11:00 AM - 01:00 PM",
     image: "/images/events/cooking-demo.jpg"
   },
   {

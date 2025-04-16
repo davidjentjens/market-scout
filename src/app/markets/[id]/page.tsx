@@ -10,6 +10,7 @@ import { vendors } from '../../data/vendors';
 import { events } from '../../data/events';
 import { Market, Vendor, Event } from '../../lib/types';
 import dynamic from 'next/dynamic';
+import { atcb_action } from 'add-to-calendar-button';
 
 // Dynamically import the map component to prevent SSR issues with Leaflet
 const DynamicMapView = dynamic(() => import('../../components/map/MapView'), {
@@ -25,6 +26,52 @@ export default function MarketDetailPage() {
   const [activeTab, setActiveTab] = useState<'details' | 'vendors' | 'events'>('details');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleAddToCalendar = async (event: Event) => {
+    const eventDate = new Date(event.date);
+    
+    // Parse times properly
+    const [startTimeStr, endTimeStr] = event.time.split(' - ');
+    
+    // Convert to 24-hour format required by the library (HH:MM)
+    const formatTimeFor24Hour = (timeStr: string) => {
+      // Extract hours and minutes
+      const match = timeStr.match(/(\d+):(\d+)\s+(AM|PM)/i);
+      if (!match) return null;
+      
+      let hours = parseInt(match[1], 10);
+      const minutes = match[2];
+      const period = match[3].toUpperCase();
+      
+      // Convert to 24-hour format
+      if (period === 'PM' && hours < 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+      
+      // Format with leading zeros
+      return `${hours.toString().padStart(2, '0')}:${minutes}`;
+    };
+    
+    const startTime = formatTimeFor24Hour(startTimeStr);
+    const endTime = formatTimeFor24Hour(endTimeStr);
+    
+    if (!startTime || !endTime) {
+      console.error("Invalid time format");
+      return;
+    }
+    
+    await atcb_action({
+      name: event.title,
+      description: event.description,
+      location: `${market?.name}, ${market?.address}, ${market?.city}, ${market?.state}`,
+      startDate: eventDate.toISOString().split('T')[0],
+      endDate: eventDate.toISOString().split('T')[0],
+      startTime: startTime,
+      endTime: endTime,
+      options: ['Apple', 'Google', 'iCal', 'Microsoft365', 'Outlook.com', 'Yahoo'],
+      timeZone: "America/Sao_Paulo", // Use the user's timezone
+      iCalFileName: event.title.replace(/\s+/g, '-').toLowerCase(),
+    });
+  };  
   
   useEffect(() => {
     // Find the market by ID
@@ -507,7 +554,7 @@ export default function MarketDetailPage() {
                           <h3 className="font-display text-lg font-bold mb-2">{event.title}</h3>
                           <p className="text-gray-600 flex-grow">{event.description}</p>
                           <div className="mt-4 pt-2 border-t border-gray-100">
-                            <button className="text-primary-600 font-medium hover:text-primary-800 hover:underline cursor-pointer">
+                            <button onClick={() => handleAddToCalendar(event)} className="text-primary-600 font-medium hover:text-primary-800 hover:underline cursor-pointer">
                               Add to Calendar
                             </button>
                           </div>
