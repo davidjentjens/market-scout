@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
               <Link href="/">
                 <div className="flex items-center">
-                  <Image src="/icons/tomato.png" alt="Market Scout Logo" width={1024} height={1024} className="h-12 w-12 mr-1" />
+                  <Image src="/icons/binoculars.png" alt="Market Scout Logo" width={512} height={512} className="h-10 w-10 mr-2" />
                   <h3 className='font-sans text-2xl text-primary-600 font-bold'>Market Scout</h3>
                 </div>
               </Link>
