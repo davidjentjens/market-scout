@@ -1,36 +1,32 @@
-// src/app/components/ui/EnsureVisibility.tsx
-"use client";
-
 import { useEffect } from 'react';
 
-const EnsureVisibility = () => {
+export function EnsureVisibility() {
   useEffect(() => {
-    // Ensure all reveal elements are visible regardless of scroll position
-    const ensureVisible = () => {
-      document.querySelectorAll('.scroll-reveal, .scroll-reveal-item').forEach(item => {
-        if (!item.classList.contains('revealed')) {
-          item.classList.add('revealed');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
         }
       });
-    };
-
-    // Run on component mount and when user navigates back to the page
-    ensureVisible();
-
-    // Handle browser back/forward navigation
-    window.addEventListener('pageshow', (event) => {
-      // The persisted property is true if the page is cached and false if not
-      if (event.persisted) {
-        ensureVisible();
-      }
+    }, { threshold: 0.1 });
+    
+    const revealItems = document.querySelectorAll('.scroll-reveal-item');
+    revealItems.forEach(item => {
+      observer.observe(item);
     });
-
+    
+    // Scroll to top when navigating back to this page
+    if (window.history.scrollRestoration) {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+    }
+    
     return () => {
-      window.removeEventListener('pageshow', ensureVisible);
+      revealItems.forEach(item => {
+        observer.unobserve(item);
+      });
     };
   }, []);
-
+  
   return null;
-};
-
-export default EnsureVisibility;
+}
