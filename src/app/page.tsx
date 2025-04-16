@@ -90,23 +90,28 @@ export default function HomePage() {
       {/* How it Works Section */}
       <section className="py-16 bg-earth-100 scroll-reveal">
         <div className="container mx-auto px-4">
-          <h2 className="font-display text-3xl font-bold text-center mb-12 scroll-reveal-item">How Market Scout Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center scroll-reveal-item delay-1">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl font-bold scroll-reveal-item">
+              How <Image src="/icons/binoculars.png" alt="Market Scout Logo" width={32} height={32} className="inline-block h-8 w-8 mx-1 align-middle" /> 
+              <span className="text-primary-600">Market Scout</span> Works
+            </h2>
+          </div>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-8 max-w-5xl mx-auto">
+            <div className="text-center md:flex-1 scroll-reveal-item delay-1">
               <div className="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 transition-transform hover:scale-110 duration-300 shadow-md">
                 <span className="font-display text-2xl font-bold text-primary-600">1</span>
               </div>
               <h3 className="font-display text-xl font-bold mb-2">Discover Markets</h3>
               <p className="text-gray-600">Find farmers markets near you with our interactive map.</p>
             </div>
-            <div className="text-center scroll-reveal-item delay-2">
+            <div className="text-center md:flex-1 scroll-reveal-item delay-2">
               <div className="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 transition-transform hover:scale-110 duration-300 shadow-md">
                 <span className="font-display text-2xl font-bold text-primary-600">2</span>
               </div>
               <h3 className="font-display text-xl font-bold mb-2">Explore Vendors</h3>
               <p className="text-gray-600">Browse local vendors and discover their seasonal offerings.</p>
             </div>
-            <div className="text-center scroll-reveal-item delay-3">
+            <div className="text-center md:flex-1 scroll-reveal-item delay-3">
               <div className="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 transition-transform hover:scale-110 duration-300 shadow-md">
                 <span className="font-display text-2xl font-bold text-primary-600">3</span>
               </div>
