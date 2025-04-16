@@ -12,7 +12,7 @@ interface MarketCardProps {
 const MarketCard: React.FC<MarketCardProps> = ({ market, className = '' }) => {
   return (
     <Link href={`/markets/${market.id}`}>
-      <article className={`card group h-full ${className}`}>
+      <article className={`card group h-full relative market-card-border-animation ${className}`}>
         <div className="relative h-48 overflow-hidden">
           <Image
             src={market.images[0] || '/images/markets/default.jpg'}

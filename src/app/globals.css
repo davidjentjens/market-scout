@@ -57,6 +57,24 @@
     }
   }
 
+  /* Border animation keyframes */
+  @keyframes borderGrow {
+    0% {
+      width: 0;
+      height: 2px;
+      border-width: 0;
+      border-bottom-width: 2px;
+      border-radius: inherit;
+    }
+    100% {
+      width: 100%;
+      height: 2px;
+      border-width: 0;
+      border-bottom-width: 2px;
+      border-radius: inherit;
+    }
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.8s ease-out forwards;
     animation-delay: 0.1s; /* Start after page load */
@@ -88,5 +106,21 @@
   
   .card {
     @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  /* Market card border animation */
+  .market-card-border-animation {
+    @apply relative overflow-hidden;
+  }
+  
+  .market-card-border-animation::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0 border-primary-300 border-solid border-0 opacity-0 transition-opacity duration-100;
+    transform-origin: bottom center;
+  }
+  
+  .market-card-border-animation:hover::after {
+    @apply w-full h-full border border-primary-300 opacity-100;
+    animation: borderGrow 0.2s ease-out forwards;
   }
 }
