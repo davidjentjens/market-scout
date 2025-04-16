@@ -131,7 +131,7 @@ export default function MarketDetailPage() {
           <div className="bg-white p-8 rounded-lg shadow-md">
             <h2 className="font-display text-3xl font-bold text-center">Market not found</h2>
             <p className="text-center mt-4">
-              <Link href="/markets" className="text-primary-600 hover:text-primary-800">
+              <Link href="/markets" className="text-primary-600 hover:text-primary-800 cursor-pointer">
                 View all markets
               </Link>
             </p>
@@ -180,7 +180,7 @@ export default function MarketDetailPage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ml-7 text-primary-600 font-medium hover:text-primary-800 hover:underline inline-flex items-center"
+                    className="ml-7 text-primary-600 font-medium hover:text-primary-800 hover:underline inline-flex items-center cursor-pointer"
                   >
                     Get Directions
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-1">
@@ -209,7 +209,7 @@ export default function MarketDetailPage() {
               {/* Image Carousel */}
               {market.images.length > 0 ? (
                 <div 
-                  className="relative h-64 lg:h-80 w-full rounded-lg overflow-hidden"
+                  className="relative h-64 lg:h-80 w-full rounded-lg overflow-hidden cursor-pointer"
                   onTouchStart={onTouchStart}
                   onTouchMove={onTouchMove}
                   onTouchEnd={onTouchEnd}
@@ -240,7 +240,7 @@ export default function MarketDetailPage() {
                       <>
                         <button 
                           onClick={goToPrevImage}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 z-20"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 z-20 cursor-pointer"
                           aria-label="Previous image"
                           disabled={isTransitioning}
                         >
@@ -251,7 +251,7 @@ export default function MarketDetailPage() {
                         
                         <button 
                           onClick={goToNextImage}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 z-20"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 z-20 cursor-pointer"
                           aria-label="Next image"
                           disabled={isTransitioning}
                         >
@@ -283,7 +283,7 @@ export default function MarketDetailPage() {
                     <button
                       key={index}
                       onClick={() => goToImage(index)}
-                      className={`w-3 h-3 rounded-full transition-colors ${
+                      className={`w-3 h-3 rounded-full transition-colors cursor-pointer ${
                         index === currentImageIndex 
                           ? 'bg-primary-600' 
                           : 'bg-gray-300 hover:bg-primary-300'
@@ -303,7 +303,7 @@ export default function MarketDetailPage() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="flex border-b border-gray-200">
             <button
-              className={`flex-1 py-4 px-6 font-medium text-center transition-colors ${
+              className={`flex-1 py-4 px-6 font-medium text-center transition-colors cursor-pointer ${
                 activeTab === 'details' 
                   ? 'text-primary-700 border-b-2 border-primary-500' 
                   : 'text-gray-600 hover:text-primary-600'
@@ -313,7 +313,7 @@ export default function MarketDetailPage() {
               Market Details
             </button>
             <button
-              className={`flex-1 py-4 px-6 font-medium text-center transition-colors ${
+              className={`flex-1 py-4 px-6 font-medium text-center transition-colors cursor-pointer ${
                 activeTab === 'vendors' 
                   ? 'text-primary-700 border-b-2 border-primary-500' 
                   : 'text-gray-600 hover:text-primary-600'
@@ -323,7 +323,7 @@ export default function MarketDetailPage() {
               Vendors <span className="ml-1 text-sm">({marketVendors.length})</span>
             </button>
             <button
-              className={`flex-1 py-4 px-6 font-medium text-center transition-colors ${
+              className={`flex-1 py-4 px-6 font-medium text-center transition-colors cursor-pointer ${
                 activeTab === 'events' 
                   ? 'text-primary-700 border-b-2 border-primary-500' 
                   : 'text-gray-600 hover:text-primary-600'
@@ -336,7 +336,6 @@ export default function MarketDetailPage() {
           
           {/* Tab Content */}
           <div className="p-6">
-            {/* Rest of the code remains the same */}
             {/* Market Details Tab */}
             {activeTab === 'details' && (
               <div>
@@ -356,7 +355,13 @@ export default function MarketDetailPage() {
                     <h2 className="font-display text-2xl font-bold mb-4">Customer Reviews</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {market.reviews.map(review => (
-                        <div key={review.id} className="bg-earth-50 p-4 rounded-lg">
+                        <div 
+                          key={review.id} 
+                          className="bg-earth-50 p-4 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-[1.02] hover:bg-white border border-transparent hover:border-primary-100 relative overflow-hidden group"
+                        >
+                          {/* Shiny animated highlight effect on hover */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-200/30 to-transparent -translate-x-full group-hover:animate-shine pointer-events-none"></div>
+                          
                           <div className="flex justify-between items-center mb-2">
                             <span className="font-bold">{review.userName}</span>
                             <div className="flex">
@@ -375,7 +380,10 @@ export default function MarketDetailPage() {
                             </div>
                           </div>
                           <p className="text-gray-700">{review.comment}</p>
-                          <p className="text-xs text-gray-500 mt-2">{new Date(review.date).toLocaleDateString()}</p>
+                          <div className="flex justify-between items-center">
+                            <p className="text-xs text-gray-500 mt-2">{new Date(review.date).toLocaleDateString()}</p>
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity text-primary-600 text-xs font-medium">Helpful review</div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -429,7 +437,7 @@ export default function MarketDetailPage() {
                       <Link 
                         href={`/vendors/${vendor.id}`} 
                         key={vendor.id}
-                        className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow group"
+                        className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow group cursor-pointer"
                       >
                         <div className="relative h-40">
                           <Image
@@ -476,7 +484,7 @@ export default function MarketDetailPage() {
                     {marketEvents.map(event => (
                       <div 
                         key={event.id}
-                        className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow flex flex-col md:flex-row"
+                        className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow flex flex-col md:flex-row cursor-pointer"
                       >
                         <div className="relative h-48 md:h-auto md:w-1/3">
                           <Image
@@ -499,7 +507,7 @@ export default function MarketDetailPage() {
                           <h3 className="font-display text-lg font-bold mb-2">{event.title}</h3>
                           <p className="text-gray-600 flex-grow">{event.description}</p>
                           <div className="mt-4 pt-2 border-t border-gray-100">
-                            <button className="text-primary-600 font-medium hover:text-primary-800 hover:underline">
+                            <button className="text-primary-600 font-medium hover:text-primary-800 hover:underline cursor-pointer">
                               Add to Calendar
                             </button>
                           </div>
