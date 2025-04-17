@@ -23,7 +23,6 @@ const ParticleBackground: React.FC = () => {
   const particles = useRef<Particle[]>([]);
   const animationFrameId = useRef<number | null>(null);
   const timeRef = useRef<number>(0);
-  const lastFrameTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,13 +41,10 @@ const ParticleBackground: React.FC = () => {
     ];
 
     // Wind direction - positive X means wind blowing to the right
-    // Increased speed by ~20%
-    const windDirection = { x: 1.5, y: 0.4 };
+    const windDirection = { x: 1.2, y: 0.3 };
 
     // Slow down the animation
-    const animationSpeed = 0.006; // Slightly increased from 0.005
-    // Maximum delta time to prevent speed spikes
-    const maxDeltaTime = 30; // milliseconds
+    const animationSpeed = 0.005;
 
     const handleResize = () => {
       canvas.width = window.innerWidth;
@@ -59,7 +55,7 @@ const ParticleBackground: React.FC = () => {
     const initParticles = () => {
       particles.current = [];
       // Reduced quantity for better performance but still visible
-      const particleCount = Math.floor((canvas.width * canvas.height) / 30000);
+      const particleCount = Math.floor((canvas.width * canvas.height) / 40000);
 
       // Create a grid-like distribution to ensure even coverage
       const gridCols = Math.ceil(Math.sqrt(particleCount));
@@ -78,9 +74,8 @@ const ParticleBackground: React.FC = () => {
           const y = row * cellHeight + Math.random() * cellHeight;
 
           // Base speed influenced by wind direction
-          // Increased base speeds by ~20%
-          const baseSpeedX = Math.random() * 0.35 + windDirection.x * 0.8;
-          const baseSpeedY = Math.random() * 0.25 + windDirection.y * 0.8;
+          const baseSpeedX = Math.random() * 0.3 + windDirection.x * 0.5;
+          const baseSpeedY = Math.random() * 0.2 + windDirection.y * 0.5;
 
           particles.current.push({
             x,
@@ -94,9 +89,9 @@ const ParticleBackground: React.FC = () => {
             rotation:
               Math.atan2(windDirection.y, windDirection.x) +
               ((Math.random() * Math.PI) / 2 - Math.PI / 4),
-            rotationSpeed: (Math.random() * 0.025 - 0.0125) * 2, // Slightly faster rotation
+            rotationSpeed: (Math.random() * 0.02 - 0.01) * 2,
             sway: 0,
-            swaySpeed: Math.random() * 0.012 + 0.006, // Slightly faster sway
+            swaySpeed: Math.random() * 0.01 + 0.005,
           });
 
           count++;
@@ -135,23 +130,9 @@ const ParticleBackground: React.FC = () => {
       ctx.restore();
     };
 
-    const animate = (timestamp: number) => {
+    const animate = () => {
       if (!ctx || !canvas) return;
-
-      // Calculate actual elapsed time with a cap to prevent speed spikes
-      if (lastFrameTimeRef.current === 0) {
-        lastFrameTimeRef.current = timestamp;
-      }
-
-      const deltaTime = Math.min(
-        timestamp - lastFrameTimeRef.current,
-        maxDeltaTime,
-      );
-      lastFrameTimeRef.current = timestamp;
-
-      // Use consistent time increment regardless of actual frame timing
-      const timeIncrement = animationSpeed * (deltaTime / 16); // 16ms is roughly 60fps
-      timeRef.current += timeIncrement;
+      timeRef.current += animationSpeed;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -176,13 +157,10 @@ const ParticleBackground: React.FC = () => {
           particle.color,
         );
 
-        // Use timeIncrement to ensure consistent movement regardless of framerate
-        const moveFactor = timeIncrement / animationSpeed;
-
-        // Add swaying motion and natural updates with framerate independence
-        particle.x += (particle.speedX + particle.sway * 0.5) * moveFactor;
-        particle.y += (particle.speedY + particle.sway * 0.2) * moveFactor;
-        particle.rotation += particle.rotationSpeed * moveFactor;
+        // Add swaying motion and natural updates
+        particle.x += particle.speedX + particle.sway * 0.5;
+        particle.y += particle.speedY + particle.sway * 0.2;
+        particle.rotation += particle.rotationSpeed;
 
         // Wrap around bounds with wider margins
         if (particle.x < -particle.size * 5) {
@@ -201,32 +179,12 @@ const ParticleBackground: React.FC = () => {
       animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    // Use passive: true to improve scroll performance
-    window.addEventListener("resize", handleResize, { passive: true });
-
-    // Ensure the animation pauses when page is not visible
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        if (animationFrameId.current) {
-          cancelAnimationFrame(animationFrameId.current);
-          animationFrameId.current = null;
-        }
-      } else {
-        if (!animationFrameId.current) {
-          lastFrameTimeRef.current = 0; // Reset timing on resume
-          animationFrameId.current = requestAnimationFrame(animate);
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
+    window.addEventListener("resize", handleResize);
     handleResize();
-    animationFrameId.current = requestAnimationFrame(animate);
+    animate();
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
