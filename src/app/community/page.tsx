@@ -1,7 +1,6 @@
-// src/app/community/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { markets } from '../data/markets';
@@ -10,24 +9,41 @@ import { Event, Review } from '../lib/types';
 import dynamic from 'next/dynamic';
 import { atcb_action } from 'add-to-calendar-button';
 
-// Components imported dynamically to avoid SSR issues
+// Dynamic imports to avoid SSR issues
 const ReviewCard = dynamic(() => import('../components/community/ReviewCard'), { ssr: false });
 const EventCard = dynamic(() => import('../components/community/EventCard'), { ssr: false });
 
-export default function CommunityPage() {
-  const [allEvents, setAllEvents] = useState<Event[]>(events);
-  const [allReviews, setAllReviews] = useState<Review[]>([]);
-  const [filter, setFilter] = useState('all');
+// Helper function outside component to avoid recreation on each render
+const formatTimeFor24Hour = (timeStr: string): string | null => {
+  const match = timeStr.match(/(\d+):(\d+)\s+(AM|PM)/i);
+  if (!match) return null;
   
-  // Initialize data
-  useEffect(() => {
-    // Get all events
-    setAllEvents(events);
-    
-    // Get all reviews from markets
-    const reviews = markets.reduce((acc, market) => {
-      if (market.reviews && market.reviews.length > 0) {
-        // Add market name to each review for display purposes
+  let hours = parseInt(match[1], 10);
+  const minutes = match[2];
+  const period = match[3].toUpperCase();
+  
+  if (period === 'PM' && hours < 12) hours += 12;
+  if (period === 'AM' && hours === 12) hours = 0;
+  
+  return `${hours.toString().padStart(2, '0')}:${minutes}`;
+};
+
+// Define prop types for components
+interface FilterButtonProps {
+  label: string;
+  value: 'all' | 'upcoming' | 'past';
+  currentFilter: string;
+  onChange: (value: 'all' | 'upcoming' | 'past') => void;
+}
+
+export default function CommunityPage() {
+  const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
+  
+  // Process reviews only once instead of on every render
+  const allReviews = useMemo<Review[]>(() => {
+    // Extract and process all reviews from markets
+    const reviews = markets.reduce<Review[]>((acc, market) => {
+      if (market.reviews?.length > 0) {
         const marketReviews = market.reviews.map(review => ({
           ...review,
           marketName: market.name
@@ -35,78 +51,83 @@ export default function CommunityPage() {
         return [...acc, ...marketReviews];
       }
       return acc;
-    }, [] as Review[]);
+    }, []);
     
     // Sort reviews by date (newest first)
-    const sortedReviews = reviews.sort((a, b) => 
+    return reviews.sort((a, b) => 
       new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-    
-    setAllReviews(sortedReviews);
   }, []);
   
+  // Filter and sort events based on the current filter
+  const filteredEvents = useMemo<Event[]>(() => {
+    const today = new Date();
+    
+    // Filter events
+    const filtered = events.filter(event => {
+      const eventDate = new Date(event.date);
+      
+      if (filter === 'upcoming') return eventDate >= today;
+      if (filter === 'past') return eventDate < today;
+      return true; // 'all' filter
+    });
+    
+    // Sort by date (upcoming first)
+    return filtered.sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  }, [filter]);
+  
   // Handle add to calendar
-  const handleAddToCalendar = async (event: Event) => {
+  const handleAddToCalendar = async (event: Event): Promise<void> => {
     const eventDate = new Date(event.date);
     const market = markets.find(m => m.id === event.marketId);
     
-    // Parse times properly
-    const [startTimeStr, endTimeStr] = event.time.split(' - ');
-    
-    // Convert to 24-hour format
-    const formatTimeFor24Hour = (timeStr: string) => {
-      const match = timeStr.match(/(\d+):(\d+)\s+(AM|PM)/i);
-      if (!match) return null;
-      
-      let hours = parseInt(match[1], 10);
-      const minutes = match[2];
-      const period = match[3].toUpperCase();
-      
-      if (period === 'PM' && hours < 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
-      
-      return `${hours.toString().padStart(2, '0')}:${minutes}`;
-    };
-    
-    const startTime = formatTimeFor24Hour(startTimeStr);
-    const endTime = formatTimeFor24Hour(endTimeStr);
-    
-    if (!startTime || !endTime || !market) {
-      console.error("Invalid data for calendar event");
+    if (!market) {
+      console.error("Market not found for event:", event);
       return;
     }
     
-    await atcb_action({
-      name: event.title,
-      description: event.description,
-      location: `${market.name}, ${market.address}, ${market.city}, ${market.state}`,
-      startDate: eventDate.toISOString().split('T')[0],
-      endDate: eventDate.toISOString().split('T')[0],
-      startTime: startTime,
-      endTime: endTime,
-      options: ['Apple', 'Google', 'iCal', 'Microsoft365', 'Outlook.com', 'Yahoo'],
-      timeZone: "America/Sao_Paulo",
-      iCalFileName: event.title.replace(/\s+/g, '-').toLowerCase(),
-    });
-  };
-  
-  // Filter events by upcoming/past
-  const filteredEvents = allEvents.filter(event => {
-    const eventDate = new Date(event.date);
-    const today = new Date();
+    // Parse times
+    const [startTimeStr, endTimeStr] = event.time.split(' - ');
+    const startTime = formatTimeFor24Hour(startTimeStr);
+    const endTime = formatTimeFor24Hour(endTimeStr);
     
-    if (filter === 'upcoming') {
-      return eventDate >= today;
-    } else if (filter === 'past') {
-      return eventDate < today;
+    if (!startTime || !endTime) {
+      console.error("Invalid time format for calendar event");
+      return;
     }
     
-    return true; // 'all' filter
-  });
-  
-  // Sort events by date (upcoming first)
-  const sortedEvents = filteredEvents.sort((a, b) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
+    try {      
+      await atcb_action({
+        name: event.title,
+        description: event.description,
+        location: `${market.name}, ${market.address}, ${market.city}, ${market.state}`,
+        startDate: eventDate.toISOString().split('T')[0],
+        endDate: eventDate.toISOString().split('T')[0],
+        startTime,
+        endTime,
+        options: ['Apple', 'Google', 'iCal', 'Microsoft365', 'Outlook.com', 'Yahoo'],
+        timeZone: "America/Sao_Paulo",
+        iCalFileName: event.title.replace(/\s+/g, '-').toLowerCase(),
+      });
+    } catch (error) {
+      console.error("Error adding event to calendar:", error);
+    }
+  };
+
+  // Extract UI components for better readability
+  const FilterButton = ({ label, value, currentFilter, onChange }: FilterButtonProps) => (
+    <button 
+      onClick={() => onChange(value)}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${
+        currentFilter === value 
+          ? 'bg-primary-600 text-white' 
+          : 'bg-white text-gray-700 hover:bg-primary-50'
+      }`}
+    >
+      {label}
+    </button>
   );
 
   return (
@@ -120,6 +141,7 @@ export default function CommunityPage() {
               alt="Background pattern" 
               fill
               className="object-cover"
+              priority
             />
           </div>
           <div className="relative z-10 p-8 md:p-12 text-white">
@@ -146,54 +168,47 @@ export default function CommunityPage() {
           <div className="flex justify-between items-center mb-8">
             <h2 className="font-display text-3xl font-bold text-primary-800">Market Events</h2>
             <div className="flex space-x-2">
-              <button 
-                onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'all' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-primary-50'
-                }`}
-              >
-                All Events
-              </button>
-              <button 
-                onClick={() => setFilter('upcoming')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'upcoming' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-primary-50'
-                }`}
-              >
-                Upcoming
-              </button>
-              <button 
-                onClick={() => setFilter('past')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'past' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-white text-gray-700 hover:bg-primary-50'
-                }`}
-              >
-                Past Events
-              </button>
+              <FilterButton
+                label="All Events"
+                value="all"
+                currentFilter={filter}
+                onChange={setFilter}
+              />
+              <FilterButton
+                label="Upcoming"
+                value="upcoming"
+                currentFilter={filter}
+                onChange={setFilter}
+              />
+              <FilterButton
+                label="Past Events"
+                value="past"
+                currentFilter={filter}
+                onChange={setFilter}
+              />
             </div>
           </div>
           
-          {sortedEvents.length === 0 ? (
+          {filteredEvents.length === 0 ? (
             <div className="bg-white p-8 rounded-lg shadow-md text-center">
               <p className="text-gray-600">No events found for the selected filter.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedEvents.map((event) => (
-                <div key={event.id}>
-                  <EventCard 
-                    event={event} 
-                    market={markets.find(m => m.id === event.marketId)!}
-                    onAddToCalendar={() => handleAddToCalendar(event)}
-                  />
-                </div>
-              ))}
+              {filteredEvents.map((event) => {
+                const market = markets.find(m => m.id === event.marketId);
+                if (!market) return null;
+                
+                return (
+                  <div key={event.id}>
+                    <EventCard 
+                      event={event} 
+                      market={market}
+                      onAddToCalendar={() => handleAddToCalendar(event)}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
