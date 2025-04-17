@@ -1,31 +1,31 @@
 // src/app/components/common/Button.tsx
-import React from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import React from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: "primary" | "secondary" | "outline";
   href?: string;
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'primary',
+  variant = "primary",
   href,
   onClick,
-  className = '',
+  className = "",
   disabled = false,
-  type = 'button',
+  type = "button",
 }) => {
-  const baseClasses = 'btn';
+  const baseClasses = "btn";
   const variantClasses = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    outline: 'btn-outline',
+    primary: "btn-primary",
+    secondary: "btn-secondary",
+    outline: "btn-outline",
   };
 
   const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${className}`;

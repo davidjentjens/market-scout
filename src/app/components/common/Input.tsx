@@ -1,5 +1,5 @@
 // src/app/components/common/Input.tsx
-import React from 'react';
+import React from "react";
 
 interface InputProps {
   type?: string;
@@ -16,20 +16,20 @@ interface InputProps {
 }
 
 const Input: React.FC<InputProps> = ({
-  type = 'text',
+  type = "text",
   placeholder,
   value,
   onChange,
   name,
   id,
-  className = '',
+  className = "",
   label,
   required = false,
   error,
   noMargin = false,
 }) => {
   return (
-    <div className={`${noMargin ? '' : 'mb-4'}`}>
+    <div className={`${noMargin ? "" : "mb-4"}`}>
       {label && (
         <label
           htmlFor={id || name}
@@ -46,7 +46,7 @@ const Input: React.FC<InputProps> = ({
         name={name}
         id={id || name}
         className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 ${
-          error ? 'border-red-500' : 'border-gray-300'
+          error ? "border-red-500" : "border-gray-300"
         } ${className}`}
         required={required}
       />

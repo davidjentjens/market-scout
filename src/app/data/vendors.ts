@@ -1,5 +1,5 @@
 // src/app/data/vendors.ts
-import { Vendor } from '../lib/types';
+import { Vendor } from "../lib/types";
 
 export const vendors: Vendor[] = [
   {
@@ -10,14 +10,14 @@ export const vendors: Vendor[] = [
     products: ["1", "2", "3"],
     images: [
       "/images/vendors/green-valley-1.jpg",
-      "/images/vendors/green-valley-2.jpg"
+      "/images/vendors/green-valley-2.jpg",
     ],
     contact: {
       email: "info@greenvalleyfarm.com",
       website: "www.greenvalleyfarm.com",
-      instagram: "@greenvalleyfarm"
+      instagram: "@greenvalleyfarm",
     },
-    featured: true
+    featured: true,
   },
   {
     id: "2",
@@ -25,13 +25,11 @@ export const vendors: Vendor[] = [
     bio: "Artisanal bakery creating sourdough breads, pastries, and seasonal treats using locally-sourced ingredients.",
     marketIds: ["1"],
     products: ["4", "5"],
-    images: [
-      "/images/vendors/sunshine-bakery-1.jpg"
-    ],
+    images: ["/images/vendors/sunshine-bakery-1.jpg"],
     contact: {
       phone: "555-123-4567",
-      instagram: "@sunshinebakes"
-    }
+      instagram: "@sunshinebakes",
+    },
   },
   {
     id: "3",
@@ -39,12 +37,10 @@ export const vendors: Vendor[] = [
     bio: "Free-range, pasture-raised chickens producing nutritious eggs. Our hens are raised with love and respect.",
     marketIds: ["1", "3"],
     products: ["6"],
-    images: [
-      "/images/vendors/happy-hen-1.jpg"
-    ],
+    images: ["/images/vendors/happy-hen-1.jpg"],
     contact: {
-      email: "eggs@happyhen.com"
-    }
+      email: "eggs@happyhen.com",
+    },
   },
   {
     id: "4",
@@ -52,13 +48,11 @@ export const vendors: Vendor[] = [
     bio: "Local, raw honey from sustainably managed hives. Our bees forage on diverse wildflowers resulting in distinctive seasonal varieties.",
     marketIds: ["1"],
     products: ["7"],
-    images: [
-      "/images/vendors/wild-meadow-1.jpg"
-    ],
+    images: ["/images/vendors/wild-meadow-1.jpg"],
     contact: {
-      website: "www.wildmeadowhoney.com"
+      website: "www.wildmeadowhoney.com",
     },
-    featured: true
+    featured: true,
   },
   {
     id: "5",
@@ -66,11 +60,9 @@ export const vendors: Vendor[] = [
     bio: "Specializing in cultivated and foraged mushrooms. We offer a rotating selection of seasonal fungi for culinary adventures.",
     marketIds: ["1", "2"],
     products: ["8", "9"],
-    images: [
-      "/images/vendors/forest-mushrooms-1.jpg"
-    ],
+    images: ["/images/vendors/forest-mushrooms-1.jpg"],
     contact: {
-      instagram: "@forestmushrooms"
-    }
-  }
+      instagram: "@forestmushrooms",
+    },
+  },
 ];

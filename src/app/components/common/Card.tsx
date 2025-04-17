@@ -1,5 +1,5 @@
 // src/app/components/common/Card.tsx
-import React from 'react';
+import React from "react";
 
 interface CardProps {
   children: React.ReactNode;
@@ -10,13 +10,13 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({
   children,
-  className = '',
+  className = "",
   onClick,
   padding = true,
 }) => {
   return (
     <div
-      className={`card ${padding ? 'p-4' : ''} ${className}`}
+      className={`card ${padding ? "p-4" : ""} ${className}`}
       onClick={onClick}
     >
       {children}

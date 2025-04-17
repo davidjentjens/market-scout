@@ -1,5 +1,5 @@
 // src/app/hooks/useGeolocation.ts
-import { useState } from 'react';
+import { useState } from "react";
 
 interface GeolocationState {
   location: { lat: number; lng: number } | null;
@@ -9,13 +9,15 @@ interface GeolocationState {
 }
 
 export const useGeolocation = (): GeolocationState => {
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const getLocation = () => {
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
+      setError("Geolocation is not supported by your browser");
       return;
     }
 
@@ -38,7 +40,7 @@ export const useGeolocation = (): GeolocationState => {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0,
-      }
+      },
     );
   };
 
