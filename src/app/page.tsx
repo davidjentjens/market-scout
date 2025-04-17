@@ -25,7 +25,7 @@ export default function HomePage() {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2 text-white">
               <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813a3.75 3.75 0 002.576-2.576l.813-2.846A.75.75 0 019 4.5z" clipRule="evenodd" />
             </svg>
-            <p className="text-white font-semibold tracking-wide text-base">From Farm to Table, Just Around the Corner</p>
+            <p className="text-white font-semibold tracking-wide text-base">Farm to Table, Just Around the Corner</p>
           </div>
           
           <div className="max-w-2xl">
