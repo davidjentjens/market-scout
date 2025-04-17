@@ -356,7 +356,7 @@ export const markets: Market[] = [
       { day: "Sunday", open: "09:00", close: "16:00" },
     ],
     images: [
-      "/images/markets/riverside-2.jpg",
+      "/images/markets/riverside-2.webp",
       "/images/markets/downtown-1.jpg"
     ],
     vendorIds: ["43", "44", "45", "46", "47"],
