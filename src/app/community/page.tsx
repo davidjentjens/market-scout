@@ -142,7 +142,7 @@ export default function CommunityPage() {
         </div>
         
         {/* Events Section */}
-        <section id="events" className="scroll-reveal mb-16">
+        <section id="events" className="mb-16">
           <div className="flex justify-between items-center mb-8">
             <h2 className="font-display text-3xl font-bold text-primary-800">Market Events</h2>
             <div className="flex space-x-2">
@@ -185,11 +185,8 @@ export default function CommunityPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedEvents.map((event, index) => (
-                <div 
-                  key={event.id} 
-                  className={`scroll-reveal-item ${index % 3 === 0 ? '' : index % 3 === 1 ? 'delay-1' : 'delay-2'}`}
-                >
+              {sortedEvents.map((event) => (
+                <div key={event.id}>
                   <EventCard 
                     event={event} 
                     market={markets.find(m => m.id === event.marketId)!}
