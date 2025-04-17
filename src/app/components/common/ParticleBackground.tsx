@@ -52,7 +52,7 @@ const ParticleBackground: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Semi-transparent layer to create depth effect
-      ctx.fillStyle = 'rgba(61, 108, 56, 0.3)';
+      ctx.fillStyle = 'rgba(95, 178, 139, 0.3)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.current.forEach((particle) => {

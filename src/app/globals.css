@@ -3,28 +3,28 @@
 
 @theme {
   /* Custom colors for Market Scout */
-  --color-primary-50: oklch(0.97 0.03 148);
-  --color-primary-100: oklch(0.94 0.07 148);
-  --color-primary-200: oklch(0.89 0.12 148);
-  --color-primary-300: oklch(0.84 0.18 148);
-  --color-primary-400: oklch(0.78 0.22 148);
-  --color-primary-500: oklch(0.72 0.24 148); /* Main brand green */
-  --color-primary-600: oklch(0.65 0.21 148);
-  --color-primary-700: oklch(0.58 0.17 148);
-  --color-primary-800: oklch(0.48 0.13 148);
-  --color-primary-900: oklch(0.40 0.10 148);
+  --color-primary-50: oklch(0.98 0.02 160);
+  --color-primary-100: oklch(0.97 0.04 160);
+  --color-primary-200: oklch(0.92 0.07 160);
+  --color-primary-300: oklch(0.86 0.10 160);
+  --color-primary-400: oklch(0.80 0.13 160);
+  --color-primary-500: oklch(0.74 0.15 160);
+  --color-primary-600: oklch(0.66 0.14 160);
+  --color-primary-700: oklch(0.58 0.12 160);
+  --color-primary-800: oklch(0.48 0.10 160);
+  --color-primary-900: oklch(0.36 0.08 160);
   
   /* Earth tones - updated with warmer, richer browns */
-  --color-earth-50: oklch(0.98 0.02 85);
-  --color-earth-100: oklch(0.97 0.03 85);
-  --color-earth-200: oklch(0.92 0.05 85);
-  --color-earth-300: oklch(0.86 0.08 85); /* Warmer terracotta */
-  --color-earth-400: oklch(0.80 0.10 85);
-  --color-earth-500: oklch(0.74 0.12 85);
-  --color-earth-600: oklch(0.66 0.11 85);
-  --color-earth-700: oklch(0.58 0.10 85);
-  --color-earth-800: oklch(0.48 0.09 85);
-  --color-earth-900: oklch(0.36 0.08 85);
+  --color-earth-50: oklch(0.98 0.02 60);
+  --color-earth-100: oklch(0.97 0.04 60);
+  --color-earth-200: oklch(0.92 0.07 60);
+  --color-earth-300: oklch(0.86 0.10 60);
+  --color-earth-400: oklch(0.80 0.13 60);
+  --color-earth-500: oklch(0.74 0.15 60);
+  --color-earth-600: oklch(0.66 0.14 60);
+  --color-earth-700: oklch(0.58 0.12 60);
+  --color-earth-800: oklch(0.48 0.10 60);
+  --color-earth-900: oklch(0.36 0.08 60);
   
   /* Font families */
   --font-sans: "Nunito Sans", Inter, ui-sans-serif, system-ui, sans-serif;
