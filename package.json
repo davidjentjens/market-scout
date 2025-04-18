@@ -13,11 +13,9 @@
     "@heroicons/react": "^2.2.0",
     "add-to-calendar-button": "^2.8.9",
     "leaflet": "^1.9.4",
-    "motion": "^12.6.5",
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hook-form": "^7.55.0",
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
