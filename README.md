@@ -37,7 +37,7 @@ Created for the 2nd Outlier Frontend UI Hackathon, this project focuses on deliv
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [TailwindCSS](https://tailwindcss.com/)
 - **Maps**: [Leaflet](https://leafletjs.com/)
-- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Animation**: Native Javascript
 
 ## 📱 Responsive Design
 
